@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/internal/aoc"
@@ -24,24 +23,24 @@ func part1(input []string) int {
 }
 
 func part2(input []string) int {
-	digitwords := []string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+	replacements := [][2]string{
+		{"one", "o1e"},
+		{"two", "t2o"},
+		{"three", "t3e"},
+		{"four", "4"},
+		{"five", "5e"},
+		{"six", "6"},
+		{"seven", "7n"},
+		{"eight", "e8t"},
+		{"nine", "n9e"},
+	}
+
 	sum := 0
-
 	for _, line := range input {
-		transformed := ""
-
-	charpos:
-		for x := 0; x < len(line); x++ {
-			for value, word := range digitwords {
-				if strings.HasPrefix(line[x:], word) {
-					transformed += strconv.Itoa(value)
-					continue charpos
-				}
-			}
-			transformed += line[x : x+1]
+		for _, replacement := range replacements {
+			line = strings.ReplaceAll(line, replacement[0], replacement[1])
 		}
-
-		sum += linevalue(transformed)
+		sum += linevalue(line)
 	}
 
 	return sum
