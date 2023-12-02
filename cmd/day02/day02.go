@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/internal/aoc"
+	"github.com/julijane/advent-of-code-2023/internal/input"
 )
 
-func calc(input []string) (int, int) {
+func calc(field *input.Field) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
@@ -16,7 +16,7 @@ func calc(input []string) (int, int) {
 	regRed := regexp.MustCompile(`(\d+) red`)
 	regGreen := regexp.MustCompile(`(\d+) green`)
 
-	for game, line := range input {
+	for game, line := range field.Lines() {
 		split1 := strings.Split(line, ": ")
 		split2 := strings.Split(split1[1], ";")
 
@@ -53,9 +53,6 @@ func calc(input []string) (int, int) {
 }
 
 func main() {
-	s1, s2 := calc(aoc.ReadFileAsLines("sample1.txt"))
-	fmt.Println("Demo:", s1, s2)
-
-	s1, s2 = calc(aoc.ReadFileAsLines("input.txt"))
-	fmt.Println("Main:", s1, s2)
+	input.Run("Sample", "sample1.txt", calc)
+	input.Run("Main", "input.txt", calc)
 }

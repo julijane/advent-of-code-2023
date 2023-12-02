@@ -1,16 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/julijane/advent-of-code-2023/internal/aoc"
+	"github.com/julijane/advent-of-code-2023/internal/input"
 )
 
 func linevalue(line string) int {
 	r := regexp.MustCompile("[^0-9]")
 	res := r.ReplaceAllString(line, "")
+	if len(res) == 0 {
+		return 0
+	}
 	return int(res[0]-'0')*10 + int(res[len(res)-1]-'0')
 }
 
@@ -46,16 +48,17 @@ func part2(input []string) int {
 	return sum
 }
 
+func calc(field *input.Field) (int, int) {
+	lines := field.Lines()
+
+	sumPart1 := part1(lines)
+	sumPart2 := part2(lines)
+
+	return sumPart1, sumPart2
+}
+
 func main() {
-	fmt.Println("Demo 1: ",
-		part1(aoc.ReadFileAsLines("sample1.txt")))
-
-	fmt.Println("Demo 2: ",
-		part2(aoc.ReadFileAsLines("sample2.txt")))
-
-	fmt.Println("Part 1: ",
-		part1(aoc.ReadFileAsLines("input.txt")))
-
-	fmt.Println("Part 2: ",
-		part2(aoc.ReadFileAsLines("input.txt")))
+	input.Run("Sample 1", "sample1.txt", calc)
+	input.Run("Sample 2", "sample2.txt", calc)
+	input.Run("Main", "input.txt", calc)
 }
