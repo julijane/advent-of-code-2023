@@ -27,44 +27,38 @@ func calc(input []string) (int, int) {
 		needBlue := 0
 
 		for _, draw := range split2 {
-			matchRed := regRed.FindSubmatch([]byte(draw))
-			matchGreen := regGreen.FindSubmatch([]byte(draw))
-			matchBlue := regBlue.FindSubmatch([]byte(draw))
+			matchRed := regRed.FindStringSubmatch(draw)
+			matchGreen := regGreen.FindStringSubmatch(draw)
+			matchBlue := regBlue.FindStringSubmatch(draw)
 
 			red := 0
 			green := 0
 			blue := 0
 
 			if len(matchRed) == 2 {
-				red, _ = strconv.Atoi(string(matchRed[1]))
+				red, _ = strconv.Atoi(matchRed[1])
 			}
 			if len(matchGreen) == 2 {
-				green, _ = strconv.Atoi(string(matchGreen[1]))
+				green, _ = strconv.Atoi(matchGreen[1])
 			}
 			if len(matchBlue) == 2 {
-				blue, _ = strconv.Atoi(string(matchBlue[1]))
+				blue, _ = strconv.Atoi(matchBlue[1])
 			}
 
 			if red > 12 || green > 13 || blue > 14 {
 				gamePossible = false
 			}
 
-			if red > needRed {
-				needRed = red
-			}
-			if green > needGreen {
-				needGreen = green
-			}
-			if blue > needBlue {
-				needBlue = blue
-			}
+			needRed = max(red, needRed)
+			needGreen = max(green, needGreen)
+			needBlue = max(blue, needBlue)
 		}
 
 		if gamePossible {
 			sumPart1 += game + 1
 		}
 
-		sumPart2 += (needRed * needGreen * needBlue)
+		sumPart2 += needRed * needGreen * needBlue
 	}
 	return sumPart1, sumPart2
 }
