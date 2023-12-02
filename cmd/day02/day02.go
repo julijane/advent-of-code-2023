@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/internal/aoc"
@@ -31,19 +30,9 @@ func calc(input []string) (int, int) {
 			matchGreen := regGreen.FindStringSubmatch(draw)
 			matchBlue := regBlue.FindStringSubmatch(draw)
 
-			red := 0
-			green := 0
-			blue := 0
-
-			if len(matchRed) == 2 {
-				red, _ = strconv.Atoi(matchRed[1])
-			}
-			if len(matchGreen) == 2 {
-				green, _ = strconv.Atoi(matchGreen[1])
-			}
-			if len(matchBlue) == 2 {
-				blue, _ = strconv.Atoi(matchBlue[1])
-			}
+			red := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchRed, 1))
+			green := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchGreen, 1))
+			blue := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchBlue, 1))
 
 			if red > 12 || green > 13 || blue > 14 {
 				gamePossible = false
