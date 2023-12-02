@@ -13,9 +13,9 @@ func calc(input []string) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
-	regBlue := regexp.MustCompile("([0-9]+) blue")
-	regRed := regexp.MustCompile("([0-9]+) red")
-	regGreen := regexp.MustCompile("([0-9]+) green")
+	regBlue := regexp.MustCompile(`(\d+) blue`)
+	regRed := regexp.MustCompile(`(\d+) red`)
+	regGreen := regexp.MustCompile(`(\d+) green`)
 
 	for game, line := range input {
 		split1 := strings.Split(line, ": ")
