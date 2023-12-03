@@ -13,7 +13,7 @@ func calc(field *aoc.Field) (int, int) {
 	for _, number := range numbers {
 		for _, symbol := range symbols {
 			if number.Adjacent(symbol) {
-				sumPart1 += field.ObjectAsInt(number)
+				sumPart1 += number.Int()
 				break
 			}
 		}
@@ -23,7 +23,7 @@ func calc(field *aoc.Field) (int, int) {
 		var adjacentNumbers []int
 		for _, number := range numbers {
 			if star.Adjacent(number) {
-				adjacentNumbers = append(adjacentNumbers, field.ObjectAsInt(number))
+				adjacentNumbers = append(adjacentNumbers, number.Int())
 			}
 		}
 		if len(adjacentNumbers) == 2 {

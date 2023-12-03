@@ -1,22 +1,29 @@
 package main
 
 import (
+	"regexp"
+	"strings"
+
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-func linevalue(line *aoc.Line) int {
-	numbers := line.FindObjects(`\d`)
-	if len(numbers) == 0 {
+func linevalue(line string) int {
+	r := regexp.MustCompile("[^0-9]")
+	res := r.ReplaceAllString(line, "")
+	if len(res) == 0 {
 		return 0
 	}
-
-	return numbers[0].Int()*10 + numbers[len(numbers)-1].Int()
+	return int(res[0]-'0')*10 + int(res[len(res)-1]-'0')
 }
 
 func part1(field *aoc.Field) int {
 	sum := 0
 	for _, line := range field.Lines() {
-		sum += linevalue(line)
+		numbers := line.FindObjects(`\d`)
+		if len(numbers) != 0 {
+			sum += numbers[0].Int()*10 + numbers[len(numbers)-1].Int()
+		}
+
 	}
 	return sum
 }
@@ -25,21 +32,22 @@ func part2(input *aoc.Field) int {
 	replacements := [][2]string{
 		{"one", "o1e"},
 		{"two", "t2o"},
-		{"three", "t3ree"},
-		{"four", "f4ur"},
-		{"five", "f5ve"},
-		{"six", "s6x"},
-		{"seven", "s7ven"},
-		{"eight", "e8ght"},
-		{"nine", "n9ne"},
+		{"three", "t3e"},
+		{"four", "4"},
+		{"five", "5e"},
+		{"six", "6"},
+		{"seven", "7n"},
+		{"eight", "e8t"},
+		{"nine", "n9e"},
 	}
 
 	sum := 0
 	for _, line := range input.Lines() {
+		text := line.Text
 		for _, replacement := range replacements {
-			line.ReplaceText(replacement[0], replacement[1])
+			text = strings.ReplaceAll(text, replacement[0], replacement[1])
 		}
-		sum += linevalue(line)
+		sum += linevalue(text)
 	}
 
 	return sum
