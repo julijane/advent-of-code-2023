@@ -4,9 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/k0kubun/pp/v3"
 )
 
 func Run(text string, fileName string, calcFunction FieldCalcFunction) {
+	_ = pp.Print // just to keep this module in the project
+
 	FieldFile, err := os.Open(fileName)
 	if err != nil {
 		panic(err)
