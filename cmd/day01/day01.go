@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/julijane/advent-of-code-2023/internal/input"
+	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
 func linevalue(line string) int {
@@ -16,15 +16,15 @@ func linevalue(line string) int {
 	return int(res[0]-'0')*10 + int(res[len(res)-1]-'0')
 }
 
-func part1(input []string) int {
+func part1(aoc []string) int {
 	sum := 0
-	for _, line := range input {
+	for _, line := range aoc {
 		sum += linevalue(line)
 	}
 	return sum
 }
 
-func part2(input []string) int {
+func part2(aoc []string) int {
 	replacements := [][2]string{
 		{"one", "o1e"},
 		{"two", "t2o"},
@@ -38,7 +38,7 @@ func part2(input []string) int {
 	}
 
 	sum := 0
-	for _, line := range input {
+	for _, line := range aoc {
 		for _, replacement := range replacements {
 			line = strings.ReplaceAll(line, replacement[0], replacement[1])
 		}
@@ -48,7 +48,7 @@ func part2(input []string) int {
 	return sum
 }
 
-func calc(field *input.Field) (int, int) {
+func calc(field *aoc.Field) (int, int) {
 	lines := field.Lines()
 
 	sumPart1 := part1(lines)
@@ -58,7 +58,7 @@ func calc(field *input.Field) (int, int) {
 }
 
 func main() {
-	input.Run("Sample 1", "sample1.txt", calc)
-	input.Run("Sample 2", "sample2.txt", calc)
-	input.Run("Main", "input.txt", calc)
+	aoc.Run("Sample 1", "sample1.txt", calc)
+	aoc.Run("Sample 2", "sample2.txt", calc)
+	aoc.Run("Main", "input.txt", calc)
 }
