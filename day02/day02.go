@@ -7,7 +7,7 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-func calc(field *aoc.Field) (int, int) {
+func calc(input *aoc.Input) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
@@ -15,7 +15,7 @@ func calc(field *aoc.Field) (int, int) {
 	regRed := regexp.MustCompile(`(\d+) red`)
 	regGreen := regexp.MustCompile(`(\d+) green`)
 
-	for game, line := range field.Lines {
+	for game, line := range input.Lines {
 		split1 := strings.Split(line.Data, ": ")
 		split2 := strings.Split(split1[1], ";")
 

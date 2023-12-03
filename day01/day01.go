@@ -13,15 +13,15 @@ func linevalue(line *aoc.Line) int {
 	return numbers[0].Int()*10 + numbers[len(numbers)-1].Int()
 }
 
-func part1(field *aoc.Field) int {
+func part1(input *aoc.Input) int {
 	sum := 0
-	for _, line := range field.Lines {
+	for _, line := range input.Lines {
 		sum += linevalue(line)
 	}
 	return sum
 }
 
-func part2(input *aoc.Field) int {
+func part2(input *aoc.Input) int {
 	replacements := [][2]string{
 		{"one", "o1e"},
 		{"two", "t2o"},
@@ -45,9 +45,9 @@ func part2(input *aoc.Field) int {
 	return sum
 }
 
-func calc(field *aoc.Field) (int, int) {
-	sumPart1 := part1(field)
-	sumPart2 := part2(field)
+func calc(input *aoc.Input) (int, int) {
+	sumPart1 := part1(input)
+	sumPart2 := part2(input)
 
 	return sumPart1, sumPart2
 }

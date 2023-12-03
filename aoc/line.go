@@ -5,12 +5,13 @@ import (
 	"strings"
 )
 
+// Line represents a line of input
 type Line struct {
 	LineNo int
 	Data   string
 }
 
-// FindObjects returns a list of objects that match the given regular expression
+// FindObjects returns a list of objects that match the given regular expression on this Line
 func (l *Line) FindObjects(re string) []*Object {
 	var objects []*Object
 	matcher := regexp.MustCompile(re)
@@ -28,7 +29,7 @@ func (l *Line) FindObjects(re string) []*Object {
 }
 
 // ReplaceText replaces all occurrences of the given string with the given replacement
-// length of find and replace must be the same
+// on this Line. Note: length of find and replace must be the same
 func (l *Line) ReplaceText(find, replace string) {
 	if len(find) != len(replace) {
 		return

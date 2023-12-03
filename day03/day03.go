@@ -2,13 +2,13 @@ package main
 
 import "github.com/julijane/advent-of-code-2023/aoc"
 
-func calc(field *aoc.Field) (int, int) {
+func calc(input *aoc.Input) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
-	numbers := field.FindObjects(`\d+`)
-	symbols := field.FindObjects(`[^\d\.]`)
-	stars := field.FindObjects(`\*`)
+	numbers := input.FindObjects(`\d+`)
+	symbols := input.FindObjects(`[^\d\.]`)
+	stars := input.FindObjects(`\*`)
 
 	for _, number := range numbers {
 		for _, symbol := range symbols {

@@ -2,7 +2,7 @@ package main
 
 import "github.com/julijane/advent-of-code-2023/aoc"
 
-func calc(field *aoc.Field) (int, int) {
+func calc(input *aoc.Input) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
