@@ -15,8 +15,8 @@ func calc(field *aoc.Field) (int, int) {
 	regRed := regexp.MustCompile(`(\d+) red`)
 	regGreen := regexp.MustCompile(`(\d+) green`)
 
-	for game, line := range field.Lines() {
-		split1 := strings.Split(line.String(), ": ")
+	for game, line := range field.Lines {
+		split1 := strings.Split(line.Data, ": ")
 		split2 := strings.Split(split1[1], ";")
 
 		gamePossible := true

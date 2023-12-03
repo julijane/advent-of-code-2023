@@ -17,18 +17,18 @@ func Run(text string, fileName string, calcFunction FieldCalcFunction) {
 		return
 	}
 
-	var data [][]byte
+	var lines []string
 
 	scanner := bufio.NewScanner(FieldFile)
 	for scanner.Scan() {
 		line := scanner.Text()
-		data = append(data, []byte(line))
+		lines = append(lines, line)
 	}
 
-	if len(data[len(data)-1]) == 0 {
-		data = data[:len(data)-1]
+	if lines[len(lines)-1] == "" {
+		lines = lines[:len(lines)-1]
 	}
 
-	res1, res2 := calcFunction(&Field{Data: data})
+	res1, res2 := calcFunction(NewField(lines))
 	fmt.Printf("%s: %d, %d\n", text, res1, res2)
 }

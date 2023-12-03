@@ -1,27 +1,29 @@
 package aoc
 
 type Field struct {
-	Data [][]byte
+	Lines []*Line
 }
 
 type FieldCalcFunction func(f *Field) (int, int)
 
-func (f *Field) Lines() []*Line {
-	var lines []*Line
-	for lineNo := range f.Data {
-		lines = append(lines, &Line{
-			Field:  f,
+func NewField(inputLines []string) *Field {
+	f := &Field{}
+
+	for lineNo, line := range inputLines {
+		f.Lines = append(f.Lines, &Line{
 			LineNo: lineNo,
+			Data:   line,
 		})
 	}
-	return lines
+
+	return f
 }
 
 // FindObjects returns a list of objects that match the given regular expression
 func (f *Field) FindObjects(re string) []*Object {
 	var objects []*Object
 
-	for _, line := range f.Lines() {
+	for _, line := range f.Lines {
 		lineObjects := line.FindObjects(re)
 		objects = append(objects, lineObjects...)
 	}

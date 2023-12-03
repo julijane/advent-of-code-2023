@@ -15,7 +15,7 @@ func linevalue(line *aoc.Line) int {
 
 func part1(field *aoc.Field) int {
 	sum := 0
-	for _, line := range field.Lines() {
+	for _, line := range field.Lines {
 		sum += linevalue(line)
 	}
 	return sum
@@ -35,7 +35,7 @@ func part2(input *aoc.Field) int {
 	}
 
 	sum := 0
-	for _, line := range input.Lines() {
+	for _, line := range input.Lines {
 		for _, replacement := range replacements {
 			line.ReplaceText(replacement[0], replacement[1])
 		}

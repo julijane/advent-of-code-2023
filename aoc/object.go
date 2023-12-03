@@ -6,7 +6,7 @@ type Object struct {
 }
 
 func (o *Object) String() string {
-	return o.Line.String()[o.left : o.right+1]
+	return o.Line.Data[o.left : o.right+1]
 }
 
 func (o *Object) Int() int {

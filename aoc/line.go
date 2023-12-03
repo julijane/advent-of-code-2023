@@ -6,12 +6,8 @@ import (
 )
 
 type Line struct {
-	Field  *Field
 	LineNo int
-}
-
-func (l *Line) String() string {
-	return string(l.Field.Data[l.LineNo])
+	Data   string
 }
 
 // FindObjects returns a list of objects that match the given regular expression
@@ -19,7 +15,7 @@ func (l *Line) FindObjects(re string) []*Object {
 	var objects []*Object
 	matcher := regexp.MustCompile(re)
 
-	matches := matcher.FindAllStringIndex(l.String(), -1)
+	matches := matcher.FindAllStringIndex(l.Data, -1)
 	for _, match := range matches {
 		objects = append(objects, &Object{
 			Line:  l,
@@ -31,7 +27,11 @@ func (l *Line) FindObjects(re string) []*Object {
 	return objects
 }
 
+// ReplaceText replaces all occurrences of the given string with the given replacement
+// length of find and replace must be the same
 func (l *Line) ReplaceText(find, replace string) {
-	newText := strings.ReplaceAll(l.String(), find, replace)
-	l.Field.Data[l.LineNo] = []byte(newText)
+	if len(find) != len(replace) {
+		return
+	}
+	l.Data = strings.ReplaceAll(l.Data, find, replace)
 }
