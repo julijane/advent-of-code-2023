@@ -13,7 +13,8 @@ func Run(text string, fileName string, calcFunction FieldCalcFunction) {
 
 	FieldFile, err := os.Open(fileName)
 	if err != nil {
-		panic(err)
+		fmt.Println(fmt.Errorf("%s: %w", text, err))
+		return
 	}
 
 	var data [][]byte
