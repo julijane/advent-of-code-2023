@@ -1,13 +1,12 @@
 package aoc
 
 type Object struct {
-	field       *Field
-	line        int
+	Line        *Line
 	left, right int
 }
 
 func (o *Object) String() string {
-	return string(o.field.Data[o.line][o.left : o.right+1])
+	return o.Line.String()[o.left : o.right+1]
 }
 
 func (o *Object) Int() int {
@@ -18,7 +17,7 @@ func (o *Object) Adjacent(other *Object) bool {
 	if other.right < o.left-1 || other.left > o.right+1 {
 		return false
 	}
-	if other.line < o.line-1 || other.line > o.line+1 {
+	if other.Line.LineNo < o.Line.LineNo-1 || other.Line.LineNo > o.Line.LineNo+1 {
 		return false
 	}
 
