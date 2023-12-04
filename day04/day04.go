@@ -38,12 +38,10 @@ func calc(input *aoc.Input) (int, int) {
 			}
 		}
 
-		if numWins >= 0 {
-			sumPart1 += int(math.Pow(2, float64(numWins-1)))
+		sumPart1 += int(math.Pow(2, float64(numWins-1)))
 
-			for y := 0; y < numWins; y++ {
-				numCopies[lineNo+y+1] += numCopies[lineNo]
-			}
+		for y := 0; y < numWins; y++ {
+			numCopies[lineNo+y+1] += numCopies[lineNo]
 		}
 	}
 
