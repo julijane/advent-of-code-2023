@@ -16,22 +16,18 @@ func calc(input *aoc.Input) (int, int) {
 	regGreen := regexp.MustCompile(`(\d+) green`)
 
 	for game, line := range input.Lines {
-		split1 := strings.Split(line.Data, ": ")
-		split2 := strings.Split(split1[1], ";")
+		splitted := strings.Split(line.Data, ";")
 
 		gamePossible := true
+
 		needRed := 0
 		needGreen := 0
 		needBlue := 0
 
-		for _, draw := range split2 {
-			matchRed := regRed.FindStringSubmatch(draw)
-			matchGreen := regGreen.FindStringSubmatch(draw)
-			matchBlue := regBlue.FindStringSubmatch(draw)
-
-			red := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchRed, 1))
-			green := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchGreen, 1))
-			blue := aoc.Atoi(aoc.SliceMemberOrEmptyString(matchBlue, 1))
+		for _, draw := range splitted {
+			red := aoc.RegexpSubmatchAsInt(draw, regRed)
+			green := aoc.RegexpSubmatchAsInt(draw, regGreen)
+			blue := aoc.RegexpSubmatchAsInt(draw, regBlue)
 
 			if red > 12 || green > 13 || blue > 14 {
 				gamePossible = false

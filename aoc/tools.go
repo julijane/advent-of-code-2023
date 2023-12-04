@@ -1,6 +1,7 @@
 package aoc
 
 import (
+	"regexp"
 	"strconv"
 )
 
@@ -17,4 +18,22 @@ func SliceMemberOrEmptyString(slice []string, index int) string {
 func Atoi(s string) int {
 	res, _ := strconv.Atoi(s)
 	return res
+}
+
+// ExtractNumbers extracts all numbers from a string
+func ExtractNumbers(s string) []int {
+	var res []int
+
+	re := regexp.MustCompile(`\d+`)
+	matches := re.FindAllString(s, -1)
+	for _, match := range matches {
+		res = append(res, Atoi(match))
+	}
+
+	return res
+}
+
+func RegexpSubmatchAsInt(s string, re *regexp.Regexp) int {
+	match := re.FindStringSubmatch(s)
+	return Atoi(SliceMemberOrEmptyString(match, 1))
 }
