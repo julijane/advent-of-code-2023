@@ -6,21 +6,16 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-func linevalue(line *aoc.Line) int {
-	re := regexp.MustCompile(`[^\d]+`)
-	digits := re.ReplaceAllString(line.Data, "")
-
-	if len(digits) == 0 {
-		return 0
-	}
-
-	return int(digits[0]-'0')*10 + int(digits[len(digits)-1]-'0')
-}
-
 func part1(input *aoc.Input) int {
+	re := regexp.MustCompile(`[^\d]+`)
+
 	sum := 0
 	for _, line := range input.Lines {
-		sum += linevalue(line)
+		digits := re.ReplaceAllString(line.Data, "")
+
+		if len(digits) > 0 {
+			sum += int(digits[0]-'0')*10 + int(digits[len(digits)-1]-'0')
+		}
 	}
 	return sum
 }
@@ -38,15 +33,13 @@ func part2(input *aoc.Input) int {
 		{"nine", "n9ne"},
 	}
 
-	sum := 0
 	for _, line := range input.Lines {
 		for _, replacement := range replacements {
 			line.ReplaceText(replacement[0], replacement[1])
 		}
-		sum += linevalue(line)
 	}
 
-	return sum
+	return part1(input)
 }
 
 func calc(input *aoc.Input) (int, int) {
