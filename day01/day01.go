@@ -1,16 +1,20 @@
 package main
 
 import (
+	"regexp"
+
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
 func linevalue(line *aoc.Line) int {
-	numbers := line.FindObjects(`\d`)
-	if len(numbers) == 0 {
+	re := regexp.MustCompile(`[^\d]+`)
+	digits := re.ReplaceAllString(line.Data, "")
+
+	if len(digits) == 0 {
 		return 0
 	}
 
-	return numbers[0].Int()*10 + numbers[len(numbers)-1].Int()
+	return int(digits[0]-'0')*10 + int(digits[len(digits)-1]-'0')
 }
 
 func part1(input *aoc.Input) int {
