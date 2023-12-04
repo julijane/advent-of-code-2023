@@ -20,16 +20,27 @@ func Atoi(s string) int {
 	return res
 }
 
+func ExtractRegexps(s, expr string) []string {
+	re := regexp.MustCompile(expr)
+	return re.FindAllString(s, -1)
+}
+
 // ExtractNumbers extracts all numbers from a string
 func ExtractNumbers(s string) []int {
 	var res []int
 
-	re := regexp.MustCompile(`\d+`)
-	matches := re.FindAllString(s, -1)
-	for _, match := range matches {
+	for _, match := range ExtractRegexps(s, `\d+`) {
 		res = append(res, Atoi(match))
 	}
+	return res
+}
 
+func ExtractDigits(s string) []int {
+	var res []int
+
+	for _, match := range ExtractRegexps(s, `\d`) {
+		res = append(res, Atoi(match))
+	}
 	return res
 }
 

@@ -1,20 +1,16 @@
 package main
 
 import (
-	"regexp"
-
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
 func part1(input *aoc.Input) int {
-	re := regexp.MustCompile(`[^\d]+`)
-
 	sum := 0
 	for _, line := range input.Lines {
-		digits := re.ReplaceAllString(line.Data, "")
+		digits := aoc.ExtractDigits(line.Data)
 
 		if len(digits) > 0 {
-			sum += int(digits[0]-'0')*10 + int(digits[len(digits)-1]-'0')
+			sum += digits[0]*10 + digits[len(digits)-1]
 		}
 	}
 	return sum
