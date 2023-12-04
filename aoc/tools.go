@@ -33,7 +33,8 @@ func ExtractNumbers(s string) []int {
 	return res
 }
 
-func RegexpSubmatchAsInt(s string, re *regexp.Regexp) int {
+func RegexpSubmatchAsInt(s, expr string) int {
+	re := regexp.MustCompile(expr)
 	match := re.FindStringSubmatch(s)
 	return Atoi(SliceMemberOrEmptyString(match, 1))
 }

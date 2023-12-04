@@ -1,7 +1,6 @@
 package main
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/aoc"
@@ -10,10 +9,6 @@ import (
 func calc(input *aoc.Input) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
-
-	regBlue := regexp.MustCompile(`(\d+) blue`)
-	regRed := regexp.MustCompile(`(\d+) red`)
-	regGreen := regexp.MustCompile(`(\d+) green`)
 
 	for game, line := range input.Lines {
 		splitted := strings.Split(line.Data, ";")
@@ -25,9 +20,9 @@ func calc(input *aoc.Input) (int, int) {
 		needBlue := 0
 
 		for _, draw := range splitted {
-			red := aoc.RegexpSubmatchAsInt(draw, regRed)
-			green := aoc.RegexpSubmatchAsInt(draw, regGreen)
-			blue := aoc.RegexpSubmatchAsInt(draw, regBlue)
+			red := aoc.RegexpSubmatchAsInt(draw, `(\d+) red`)
+			green := aoc.RegexpSubmatchAsInt(draw, `(\d+) green`)
+			blue := aoc.RegexpSubmatchAsInt(draw, `(\d+) blue`)
 
 			if red > 12 || green > 13 || blue > 14 {
 				gamePossible = false
