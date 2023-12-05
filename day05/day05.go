@@ -6,11 +6,14 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-type Blocks [7][][3]int64
+type (
+	Instruction       [3]int
+	InstructionBlocks [7][]Instruction
+)
 
-func runforSeed(blocks Blocks, seed int64) int64 {
-	for _, block := range blocks {
-		for _, inst := range block {
+func runforSeed(instructionBlocks InstructionBlocks, seed int) int {
+	for _, instructionBlock := range instructionBlocks {
+		for _, inst := range instructionBlock {
 			if seed >= inst[1] && seed < inst[1]+inst[2] {
 				seed = seed + (inst[0] - inst[1])
 				break
@@ -22,39 +25,28 @@ func runforSeed(blocks Blocks, seed int64) int64 {
 }
 
 func calc(input *aoc.Input) (int, int) {
-	resultPart1 := int64(math.MaxInt64)
-	resultPart2 := int64(math.MaxInt64)
+	resultPart1 := math.MaxInt
+	resultPart2 := math.MaxInt
 
-	seeds := aoc.ExtractNumbers(input.Lines[0].Data)
+	textBlocks := input.TextBlocks()
 
-	blocks := [7][][3]int64{}
-	line := 3
-	block := 0
+	seeds := aoc.ExtractNumbers(textBlocks[0][0])
 
-	for {
-		if line >= len(input.Lines) {
-			break
+	instructionBlocks := InstructionBlocks{}
+
+	for block := 1; block < 8; block++ {
+		for _, line := range textBlocks[block][1:] {
+			instructionData := aoc.ExtractNumbers(line)
+			instructionBlocks[block-1] = append(instructionBlocks[block-1], Instruction{
+				instructionData[0],
+				instructionData[1],
+				instructionData[2],
+			})
 		}
-
-		lineText := input.Lines[line].Data
-
-		if lineText == "" {
-			block++
-			line += 2
-			continue
-		}
-
-		lineData := aoc.ExtractNumbers(lineText)
-		blocks[block] = append(blocks[block], [3]int64{
-			int64(lineData[0]),
-			int64(lineData[1]),
-			int64(lineData[2]),
-		})
-		line++
 	}
 
 	for _, seed := range seeds {
-		result := runforSeed(blocks, int64(seed))
+		result := runforSeed(instructionBlocks, seed)
 
 		if result < resultPart1 {
 			resultPart1 = result
@@ -65,14 +57,14 @@ func calc(input *aoc.Input) (int, int) {
 		seed := seeds[num]
 		length := seeds[num+1]
 		for realSeed := seed; realSeed < seed+length; realSeed++ {
-			result := runforSeed(blocks, int64(realSeed))
+			result := runforSeed(instructionBlocks, realSeed)
 			if result < resultPart2 {
 				resultPart2 = result
 			}
 		}
 	}
 
-	return int(resultPart1), int(resultPart2)
+	return resultPart1, resultPart2
 }
 
 func main() {

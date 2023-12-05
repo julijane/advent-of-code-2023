@@ -33,3 +33,21 @@ func (i *Input) FindObjects(re string) []*Object {
 
 	return objects
 }
+
+// TextBlocks returns the input data as a list of blocks (separated by empty lines in input)
+func (i *Input) TextBlocks() [][]string {
+	var blocks [][]string
+	var block []string
+
+	for _, line := range i.Lines {
+		if line.Data == "" {
+			blocks = append(blocks, block)
+			block = []string{}
+			continue
+		}
+		block = append(block, line.Data)
+	}
+	blocks = append(blocks, block)
+
+	return blocks
+}
