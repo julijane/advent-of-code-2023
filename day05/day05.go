@@ -129,7 +129,10 @@ func calc(input *aoc.Input) (int, int) {
 		instructionBlocks[block-1] = genInstructionBlock(textBlocks[block][1:])
 	}
 
-	// The Mapping Table maps input ranges to delta values to apply to get from input to output
+	// The Mapping Table maps input ranges to delta values
+	// (which are to be added in this range) to get from input to output.
+	// We start with a single entry convering the full integer range,
+	// which will be split up by applying the instruction blocks.
 	mappingTable := &Block{
 		&RangeDelta{From: 0, To: math.MaxInt, Delta: 0},
 	}
@@ -173,23 +176,18 @@ func calc(input *aoc.Input) (int, int) {
 search:
 	for _, mappingEntry := range *mappingTable {
 		for num := 0; num < len(seeds); num += 2 {
-			seed := seeds[num]
-			length := seeds[num+1]
+			firstSeed := seeds[num]
+			numSeeds := seeds[num+1]
 
 			// this mapping entry does not apply to this seed range
-			if seed > mappingEntry.To || seed+length < mappingEntry.From {
+			if firstSeed > mappingEntry.To || firstSeed+numSeeds < mappingEntry.From {
 				continue
 			}
 
 			// if our seed range starts before the start of the mapping entry
 			// we use the start of the mapping entry to get the location
-			if seed < mappingEntry.From {
-				resultPart2 = mappingEntry.From + mappingEntry.Delta
-				break search
-			}
-
 			// otherwise we get the location from the first seed of the range
-			resultPart2 = seed + mappingEntry.Delta
+			resultPart2 = max(firstSeed, mappingEntry.From) + mappingEntry.Delta
 			break search
 		}
 	}
