@@ -5,9 +5,6 @@ type Input struct {
 	Lines []*Line
 }
 
-// InputCalcFunction is the function signature for the calculation function
-type InputCalcFunction func(i *Input) (int, int)
-
 // NewInput creates a new Input object from the given input lines
 func NewInput(inputLines []string) *Input {
 	i := &Input{}

@@ -118,7 +118,7 @@ func transformMappingTable(mappingTable *Block, instructionBlock *Block) *Block 
 	return &newTable
 }
 
-func calc(input *aoc.Input) (int, int) {
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	resultPart1 := math.MaxInt
 	resultPart2 := math.MaxInt
 
@@ -196,6 +196,6 @@ search:
 }
 
 func main() {
-	aoc.Run("Sample", "sample1.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, true)
+	aoc.Run("input.txt", calc, true, true)
 }

@@ -31,7 +31,7 @@ func getSingleNumber(line string) int {
 	return aoc.Atoi(numString)
 }
 
-func calc(input *aoc.Input) (int, int) {
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	resultPart1 := 1
 
 	// Part 1
@@ -51,6 +51,6 @@ func calc(input *aoc.Input) (int, int) {
 }
 
 func main() {
-	aoc.Run("Sample", "sample1.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, true)
+	aoc.Run("input.txt", calc, true, true)
 }

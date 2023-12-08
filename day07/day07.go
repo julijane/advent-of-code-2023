@@ -156,7 +156,7 @@ func scoreHands(hands []*Hand) int {
 	return result
 }
 
-func calc(input *aoc.Input) (int, int) {
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	hands := []*Hand{}
 	for _, line := range input.Lines {
 		splitted := strings.Split(line.Data, " ")
@@ -182,6 +182,6 @@ func calc(input *aoc.Input) (int, int) {
 }
 
 func main() {
-	aoc.Run("Sample", "sample1.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, true)
+	aoc.Run("input.txt", calc, true, true)
 }

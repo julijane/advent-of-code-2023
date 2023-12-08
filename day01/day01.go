@@ -38,15 +38,23 @@ func part2(input *aoc.Input) int {
 	return part1(input)
 }
 
-func calc(input *aoc.Input) (int, int) {
-	sumPart1 := part1(input)
-	sumPart2 := part2(input)
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
+	sumPart1 := 0
+	sumPart2 := 0
+
+	if runPart1 {
+		sumPart1 = part1(input)
+	}
+
+	if runPart2 {
+		sumPart2 = part2(input)
+	}
 
 	return sumPart1, sumPart2
 }
 
 func main() {
-	aoc.Run("Sample 1", "sample1.txt", calc)
-	aoc.Run("Sample 2", "sample2.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, false)
+	aoc.Run("sample2.txt", calc, false, true)
+	aoc.Run("input.txt", calc, true, true)
 }

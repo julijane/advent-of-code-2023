@@ -81,7 +81,7 @@ func part2(turns string, instructions Instructions) int {
 	return LCM(ghostTurns)
 }
 
-func calc(input *aoc.Input) (int, int) {
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	turns := input.Lines[0].Data
 
 	instructions := make(map[string]Instruction)
@@ -93,15 +93,23 @@ func calc(input *aoc.Input) (int, int) {
 		instructions[line.Data[0:3]] = instruction
 	}
 
-	resultPart1 := part1(turns, instructions)
-	resultPart2 := part2(turns, instructions)
+	resultPart1 := 0
+	resultPart2 := 0
+
+	if runPart1 {
+		resultPart1 = part1(turns, instructions)
+	}
+
+	if runPart2 {
+		resultPart2 = part2(turns, instructions)
+	}
 
 	return resultPart1, resultPart2
 }
 
 func main() {
-	// aoc.Run("Sample 1", "sample1.txt", calc)
-	// aoc.Run("Sample 2", "sample2.txt", calc)
-	// aoc.Run("Sample 3", "sample3.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, false)
+	aoc.Run("sample2.txt", calc, true, false)
+	aoc.Run("sample3.txt", calc, false, true)
+	aoc.Run("input.txt", calc, true, true)
 }

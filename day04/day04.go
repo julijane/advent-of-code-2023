@@ -8,7 +8,7 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-func calc(input *aoc.Input) (int, int) {
+func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	sumPart1 := 0
 	sumPart2 := 0
 
@@ -42,6 +42,6 @@ func calc(input *aoc.Input) (int, int) {
 }
 
 func main() {
-	aoc.Run("Sample", "sample1.txt", calc)
-	aoc.Run("Main", "input.txt", calc)
+	aoc.Run("sample1.txt", calc, true, true)
+	aoc.Run("input.txt", calc, true, true)
 }
