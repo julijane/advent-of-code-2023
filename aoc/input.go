@@ -1,5 +1,7 @@
 package aoc
 
+import "strings"
+
 // Input represents the input data
 type Input struct {
 	Lines []*Line
@@ -47,4 +49,17 @@ func (i *Input) TextBlocks() [][]string {
 	blocks = append(blocks, block)
 
 	return blocks
+}
+
+func (i *Input) PlainLines() []string {
+	res := []string{}
+	for _, line := range i.Lines {
+		res = append(res, line.Data)
+	}
+
+	return res
+}
+
+func (i *Input) SingleString() string {
+	return strings.Join(i.PlainLines(), "\n")
 }
