@@ -29,7 +29,7 @@ func ExtractRegexps(s, expr string) []string {
 func ExtractNumbers(s string) []int {
 	var res []int
 
-	for _, match := range ExtractRegexps(s, `\d+`) {
+	for _, match := range ExtractRegexps(s, `-?\d+`) {
 		res = append(res, Atoi(match))
 	}
 	return res
