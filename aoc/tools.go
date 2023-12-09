@@ -1,8 +1,11 @@
 package aoc
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
+
+	"github.com/k0kubun/pp/v3"
 )
 
 // SliceMemberOrEmptyString returns the member of a slice at the given index,
@@ -48,4 +51,10 @@ func RegexpSubmatchAsInt(s, expr string) int {
 	re := regexp.MustCompile(expr)
 	match := re.FindStringSubmatch(s)
 	return Atoi(SliceMemberOrEmptyString(match, 1))
+}
+
+func Print(s string, v any) {
+	fmt.Print(s + ": ")
+	pp.Print(v)
+	fmt.Println()
 }

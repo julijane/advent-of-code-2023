@@ -63,3 +63,9 @@ func (i *Input) PlainLines() []string {
 func (i *Input) SingleString() string {
 	return strings.Join(i.PlainLines(), "\n")
 }
+
+func (i *Input) Map(fn func(string) string) {
+	for _, line := range i.Lines {
+		line.Data = fn(line.Data)
+	}
+}
