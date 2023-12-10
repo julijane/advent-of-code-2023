@@ -122,6 +122,8 @@ steps:
 
 	resultPart2 = (area-len(snake))/2 + 1
 
+	printGrid(*grid, snake)
+
 	return resultPart1, resultPart2
 }
 
