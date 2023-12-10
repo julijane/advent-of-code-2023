@@ -1,21 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/aoc"
-)
-
-const (
-	DR = 0
-	D  = 1
-	DL = 2
-	L  = 3
-	UL = 4
-	U  = 5
-	UR = 6
-	R  = 7
 )
 
 func getConnectedNeighbors(grid *aoc.Grid, currentPos *aoc.Coordinate) *aoc.Coordinates {
@@ -50,35 +38,6 @@ func getConnectedNeighbors(grid *aoc.Grid, currentPos *aoc.Coordinate) *aoc.Coor
 	}
 
 	return &results
-}
-
-func printGrid(grid aoc.Grid, snake aoc.Coordinates) {
-	// cleanup the trash
-	grid.Map(func(pos *aoc.Coordinate, value byte) byte {
-		if !snake.Includes(pos) {
-			return ' '
-		}
-		return value
-	})
-
-	replacer := strings.NewReplacer(
-		"F", "┌",
-		"L", "└",
-		"7", "┐",
-		"J", "┘",
-		".", " ",
-		"-", "─",
-		"|", "│",
-		"S", "█",
-	)
-
-	for y := 0; y < grid.Height; y++ {
-		s := ""
-		if grid.Data[y] != nil {
-			s = replacer.Replace(string(grid.Data[y]))
-		}
-		fmt.Println(s)
-	}
 }
 
 func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
