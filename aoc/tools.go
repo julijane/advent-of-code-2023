@@ -58,3 +58,19 @@ func Print(s string, v any) {
 	pp.Print(v)
 	fmt.Println()
 }
+
+func StringFrom(s string, from int) string {
+	if len(s) < from {
+		return ""
+	}
+
+	return s[from:]
+}
+
+func SliceFrom[T any](s []T, from int) []T {
+	if len(s) < from {
+		return []T{}
+	}
+
+	return s[from:]
+}

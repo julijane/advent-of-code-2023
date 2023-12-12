@@ -7,7 +7,7 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-var calculatedPrior map[string]map[string]int
+var calculatedPrior map[string]int
 
 func intSliceString(ints []int) string {
 	result := ""
@@ -21,11 +21,9 @@ func intSliceString(ints []int) string {
 }
 
 func countPermutations(pattern string, lengths []int) int {
-	lenString := intSliceString(lengths)
-	if _, ok := calculatedPrior[pattern]; ok {
-		if _, ok := calculatedPrior[pattern][lenString]; ok {
-			return calculatedPrior[pattern][lenString]
-		}
+	cacheKey := pattern + intSliceString(lengths)
+	if value, ok := calculatedPrior[cacheKey]; ok {
+		return value
 	}
 
 	if len(pattern) == 0 {
@@ -66,26 +64,15 @@ func countPermutations(pattern string, lengths []int) int {
 		if len(pattern) >= needLength && strings.Index(pattern[:needLength], ".") == -1 {
 			// we need to match exactly or must be followed by a working spring
 			if len(pattern) == needLength || pattern[needLength] != '#' {
-				// count recursively, but we need to keep separation between blocks of damaged springs
-				subpattern := ""
-				if len(pattern) > needLength {
-					subpattern = pattern[needLength+1:]
-				}
-				sublengths := []int{}
-				if len(lengths) > 1 {
-					sublengths = lengths[1:]
-				}
-
-				count += countPermutations(subpattern, sublengths)
+				// count recursively, but we need to keep one field separation between blocks of damaged springs
+				count += countPermutations(
+					aoc.StringFrom(pattern, needLength+1),
+					aoc.SliceFrom(lengths, 1))
 			}
 		}
 	}
 
-	if _, ok := calculatedPrior[pattern]; !ok {
-		calculatedPrior[pattern] = make(map[string]int)
-	}
-
-	calculatedPrior[pattern][lenString] = count
+	calculatedPrior[cacheKey] = count
 	return count
 }
 
@@ -93,7 +80,7 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	resultPart1 := 0
 	resultPart2 := 0
 
-	calculatedPrior = make(map[string]map[string]int)
+	calculatedPrior = make(map[string]int)
 
 	for _, line := range input.PlainLines() {
 		parts := strings.Split(line, " ")
