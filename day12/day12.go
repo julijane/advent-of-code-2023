@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strconv"
+	"fmt"
 	"strings"
 
 	"github.com/julijane/advent-of-code-2023/aoc"
@@ -9,23 +9,7 @@ import (
 
 var calculatedPrior map[string]int
 
-func intSliceString(ints []int) string {
-	result := ""
-	for x, i := range ints {
-		if x > 0 {
-			result += ","
-		}
-		result += strconv.Itoa(i)
-	}
-	return result
-}
-
 func countPermutations(pattern string, lengths []int) int {
-	cacheKey := pattern + intSliceString(lengths)
-	if value, ok := calculatedPrior[cacheKey]; ok {
-		return value
-	}
-
 	if len(pattern) == 0 {
 		// we don't have any more input
 		if len(lengths) == 0 {
@@ -49,10 +33,16 @@ func countPermutations(pattern string, lengths []int) int {
 		return 1
 	}
 
+	// if we have calculated this before, return the cached value
+	cacheKey := fmt.Sprintf("%v%v", pattern, lengths)
+	if value, ok := calculatedPrior[cacheKey]; ok {
+		return value
+	}
+
 	count := 0
 
 	if pattern[0] == '.' || pattern[0] == '?' {
-		// this can be a working spring, so lets first try that
+		// this is or can be a working spring, so lets first try that
 		count += countPermutations(pattern[1:], lengths)
 	}
 
@@ -92,17 +82,16 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 			lengths = append(lengths, aoc.Atoi(length))
 		}
 
-		res := countPermutations(pattern, lengths)
-		resultPart1 += res
+		part2lenghts := []int{}
+		for x := 0; x < 5; x++ {
+			part2lenghts = append(part2lenghts, lengths...)
+		}
 
-		pattern = pattern + "?" + pattern + "?" + pattern + "?" + pattern + "?" + pattern
-		newlengths := append(lengths, lengths...)
-		newlengths = append(newlengths, lengths...)
-		newlengths = append(newlengths, lengths...)
-		newlengths = append(newlengths, lengths...)
+		resultPart1 += countPermutations(pattern, lengths)
 
-		res = countPermutations(pattern, newlengths)
-		resultPart2 += res
+		resultPart2 += countPermutations(
+			fmt.Sprintf("%s?%s?%s?%s?%s", pattern, pattern, pattern, pattern, pattern),
+			part2lenghts)
 
 	}
 
