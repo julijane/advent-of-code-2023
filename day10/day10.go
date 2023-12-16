@@ -16,7 +16,7 @@ func getConnectedNeighbors(grid *aoc.Grid, currentPos *aoc.Coordinate) *aoc.Coor
 		currentPos.Right(),
 	}
 
-	thisContent := grid.Get(currentPos)
+	thisContent := grid.Get(currentPos, '#')
 
 	// first string is what the other field is allowed to be
 	// second string is what we then must be
@@ -29,7 +29,7 @@ func getConnectedNeighbors(grid *aoc.Grid, currentPos *aoc.Coordinate) *aoc.Coor
 
 	for neighbor := 0; neighbor < 4; neighbor++ {
 		neighborPos := otherPos[neighbor]
-		neighborContent := grid.Get(neighborPos)
+		neighborContent := grid.Get(neighborPos, '#')
 
 		if strings.IndexAny(okList[neighbor][0], string(neighborContent)) > -1 &&
 			strings.Index(okList[neighbor][1], string(thisContent)) > -1 {
