@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"slices"
 	"strings"
 
@@ -26,28 +27,30 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	focalLengths := make(map[string]int)
 	boxes := [256][]string{}
 
+	re := regexp.MustCompile(`([a-z]+)([=-]+)([0-9]+)?`)
+
 	parts := strings.Split(inputLine, ",")
 	for _, part := range parts {
 		resultPart1 += hash(part)
 
-		posEqual := strings.Index(part, "=")
-		posDash := strings.Index(part, "-")
-		if posEqual >= 0 {
-			focalLengths[part[:posEqual]] = aoc.Atoi(part[posEqual+1:])
-		}
+		matches := re.FindAllStringSubmatch(part, -1)
 
-		label := part[:max(posDash, posEqual)]
+		label := matches[0][1]
+		operation := matches[0][2]
 		targetBox := hash(label)
 
-		posLens := slices.Index(boxes[targetBox], label)
-		if posDash > -1 {
-			if posLens > -1 {
-				boxes[targetBox] = append(boxes[targetBox][:posLens], boxes[targetBox][posLens+1:]...)
-			}
-		} else {
-			if posLens < 0 {
-				boxes[targetBox] = append(boxes[targetBox], label)
-			}
+		if operation == "-" {
+			boxes[targetBox] = slices.DeleteFunc(
+				boxes[targetBox],
+				func(s string) bool { return s == label },
+			)
+			continue
+		}
+
+		focalLengths[label] = aoc.Atoi(matches[0][3])
+
+		if !slices.Contains(boxes[targetBox], label) {
+			boxes[targetBox] = append(boxes[targetBox], label)
 		}
 	}
 
