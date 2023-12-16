@@ -22,19 +22,18 @@ func rotateCW(lines []string) []string {
 
 func tilt(platform []string) []string {
 	for y := 0; y < len(platform); y++ {
-		groups := strings.Split(platform[y], "#")
-		for g := 0; g < len(groups); g++ {
-			countRocks := 0
-			for _, c := range groups[g] {
-				if c == 'O' {
-					countRocks++
-				}
+		tiltedLine := ""
+
+		for n, group := range strings.Split(platform[y], "#") {
+			if n > 0 {
+				tiltedLine += "#"
 			}
 
-			groupLen := len(groups[g])
-			groups[g] = strings.Repeat(".", groupLen-countRocks) + strings.Repeat("O", countRocks)
+			bytes := []byte(group)
+			slices.Sort(bytes)
+			tiltedLine += string(bytes)
 		}
-		platform[y] = strings.Join(groups, "#")
+		platform[y] = tiltedLine
 	}
 
 	return platform
@@ -58,17 +57,15 @@ func calcPart1(lines []string) int {
 }
 
 func calcPart2(lines []string) int {
-	sequence := []string{}
-	loopLength := -1
-	repeatedFrom := -1
-
 	platform := lines
+
+	sequence := []string{}
+	repeatedFrom := -1
 
 	for {
 		platformString := strings.Join(platform, "+")
 		repeatedFrom = slices.Index(sequence, platformString)
 		if repeatedFrom != -1 {
-			loopLength = len(sequence) - repeatedFrom
 			break
 		}
 
@@ -79,7 +76,9 @@ func calcPart2(lines []string) int {
 		}
 	}
 
+	loopLength := len(sequence) - repeatedFrom
 	finalPos := repeatedFrom + (1000000000-repeatedFrom)%loopLength
+
 	platform = strings.Split(sequence[finalPos], "+")
 
 	return sumPlatform(rotateCW(platform))
