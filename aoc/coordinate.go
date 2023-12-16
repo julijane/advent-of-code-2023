@@ -45,6 +45,20 @@ func (c *Coordinate) Right() *Coordinate {
 	return c.AddXY(1, 0)
 }
 
+func (c *Coordinate) Move(direction int) *Coordinate {
+	switch direction {
+	case 0:
+		return c.Above()
+	case 1:
+		return c.Right()
+	case 2:
+		return c.Below()
+	case 3:
+		return c.Left()
+	}
+	return c
+}
+
 type Coordinates []*Coordinate
 
 func (cs *Coordinates) Includes(c *Coordinate) bool {
