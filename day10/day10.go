@@ -6,10 +6,10 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-func getConnectedNeighbors(grid *aoc.Grid, currentPos *aoc.Coordinate) *aoc.Coordinates {
+func getConnectedNeighbors(grid *aoc.Grid, currentPos aoc.Coordinate) *aoc.Coordinates {
 	results := aoc.Coordinates{}
 
-	otherPos := [4]*aoc.Coordinate{
+	otherPos := [4]aoc.Coordinate{
 		currentPos.Above(),
 		currentPos.Left(),
 		currentPos.Below(),
@@ -47,7 +47,7 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	snake := aoc.Coordinates{}
 	start := grid.Find('S')
 	currentPos := start.Copy()
-	priorPos := &aoc.Coordinate{X: -1, Y: -1}
+	priorPos := aoc.Coordinate{X: -1, Y: -1}
 steps:
 	for {
 		if start.Same(currentPos) && len(snake) > 0 {

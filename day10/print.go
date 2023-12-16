@@ -9,7 +9,7 @@ import (
 
 func printGrid(grid aoc.Grid, snake aoc.Coordinates) {
 	// cleanup the trash
-	grid.Map(func(pos *aoc.Coordinate, value byte) byte {
+	grid.Map(func(pos aoc.Coordinate, value byte) byte {
 		if !snake.Includes(pos) {
 			return ' '
 		}

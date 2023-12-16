@@ -36,7 +36,7 @@ outer:
 	for x := 0; x < grid.Width; x++ {
 		for y := 0; y < grid.Height; y++ {
 			if grid.Data[y][x] == '#' {
-				galaxies = append(galaxies, &aoc.Coordinate{X: x, Y: y})
+				galaxies = append(galaxies, aoc.Coordinate{X: x, Y: y})
 			}
 		}
 	}

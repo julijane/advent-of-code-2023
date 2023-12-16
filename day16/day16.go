@@ -43,7 +43,7 @@ func walk(startPoint aoc.Coordinate, direction int) {
 		} else {
 			direction = direction - 1
 		}
-		walk(*newPos, direction)
+		walk(newPos, direction)
 		return
 	}
 
@@ -53,19 +53,19 @@ func walk(startPoint aoc.Coordinate, direction int) {
 		} else {
 			direction = (direction + 1) % 4
 		}
-		walk(*newPos, direction)
+		walk(newPos, direction)
 		return
 	}
 
 	if element == '.' ||
 		(element == '|' && (direction == 0 || direction == 2)) ||
 		(element == '-' && (direction == 1 || direction == 3)) {
-		walk(*newPos, direction)
+		walk(newPos, direction)
 		return
 	}
 
-	walk(*newPos, (direction+3)%4)
-	walk(*newPos, (direction+1)%4)
+	walk(newPos, (direction+3)%4)
+	walk(newPos, (direction+1)%4)
 }
 
 func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {

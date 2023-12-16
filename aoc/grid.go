@@ -19,11 +19,11 @@ func (i *Input) Grid() *Grid {
 	return grid
 }
 
-func (g *Grid) Inside(c *Coordinate) bool {
+func (g *Grid) Inside(c Coordinate) bool {
 	return c.X >= 0 && c.X < g.Width && c.Y >= 0 && c.Y < g.Height
 }
 
-func (g *Grid) Get(c *Coordinate, outsideVal byte) byte {
+func (g *Grid) Get(c Coordinate, outsideVal byte) byte {
 	if !g.Inside(c) {
 		return outsideVal
 	}
@@ -31,24 +31,24 @@ func (g *Grid) Get(c *Coordinate, outsideVal byte) byte {
 	return g.Data[c.Y][c.X]
 }
 
-func (g *Grid) Find(search byte) *Coordinate {
+func (g *Grid) Find(search byte) Coordinate {
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
 			if g.Data[y][x] == search {
-				return &Coordinate{X: x, Y: y}
+				return Coordinate{X: x, Y: y}
 			}
 		}
 	}
 
-	return &Coordinate{X: -1, Y: -1}
+	return Coordinate{X: -1, Y: -1}
 }
 
-type GridMapFunction func(pos *Coordinate, value byte) byte
+type GridMapFunction func(pos Coordinate, value byte) byte
 
 func (g *Grid) Map(fn GridMapFunction) {
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
-			g.Data[y][x] = fn(&Coordinate{
+			g.Data[y][x] = fn(Coordinate{
 				X: x,
 				Y: y,
 			}, g.Data[y][x])
@@ -56,7 +56,7 @@ func (g *Grid) Map(fn GridMapFunction) {
 	}
 }
 
-func (g *Grid) FindConnectedFrom(startPos *Coordinate, foundBefore Coordinates, search byte) *Coordinates {
+func (g *Grid) FindConnectedFrom(startPos Coordinate, foundBefore Coordinates, search byte) *Coordinates {
 	found := Coordinates{}
 
 	if g.Get(startPos, '#') != search {
