@@ -4,106 +4,85 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-type Pointer struct {
-	c         aoc.Coordinate
-	direction int
-}
-
-var (
-	alreadyWalked = make(map[Pointer]struct{})
-	energized     = make(map[aoc.Coordinate]struct{})
+type Walker struct {
 	grid          *aoc.Grid
-)
-
-func reset() {
-	alreadyWalked = make(map[Pointer]struct{})
-	energized = make(map[aoc.Coordinate]struct{})
+	alreadyWalked map[aoc.Pointer]struct{}
+	energized     map[aoc.Coordinate]struct{}
 }
 
-func walk(startPoint aoc.Coordinate, direction int) {
-	energized[startPoint] = struct{}{}
-	if _, ok := alreadyWalked[Pointer{startPoint, direction}]; ok {
+func (w *Walker) walk(p aoc.Pointer) {
+	w.energized[p.C] = struct{}{}
+	if _, ok := w.alreadyWalked[p]; ok {
 		return
 	}
-	alreadyWalked[Pointer{startPoint, direction}] = struct{}{}
 
-	newPos := startPoint.Copy().Move(direction)
-	element := grid.Get(newPos, 'X')
+	w.alreadyWalked[p] = struct{}{}
 
-	// dirvis := [4]string{"↑", "→", "↓", "←"}
-	// fmt.Printf("%v %v %v %c\n", startPoint, dirvis[direction], newPos, element)
+	p.Move()
 
+	element := w.grid.Get(p.C, 'X')
 	if element == 'X' {
 		return
 	}
 
 	if element == '/' {
-		if direction == 0 || direction == 2 {
-			direction = direction + 1
+		if p.IsUpOrDown() {
+			p.TurnRight()
 		} else {
-			direction = direction - 1
+			p.TurnLeft()
 		}
-		walk(newPos, direction)
-		return
-	}
-
-	if element == '\\' {
-		if direction == 0 || direction == 2 {
-			direction = (direction + 3) % 4
+	} else if element == '\\' {
+		if p.IsUpOrDown() {
+			p.TurnLeft()
 		} else {
-			direction = (direction + 1) % 4
+			p.TurnRight()
 		}
-		walk(newPos, direction)
-		return
+	} else if element != '.' &&
+		(element != '|' || !p.IsUpOrDown()) &&
+		(element != '-' || !p.IsLeftOrRight()) {
+		p.TurnLeft()
+		w.walk(p)
+		p.TurnAround()
 	}
 
-	if element == '.' ||
-		(element == '|' && (direction == 0 || direction == 2)) ||
-		(element == '-' && (direction == 1 || direction == 3)) {
-		walk(newPos, direction)
-		return
+	w.walk(p)
+}
+
+func walk(grid *aoc.Grid, p aoc.Pointer) int {
+	w := Walker{
+		grid:          grid,
+		alreadyWalked: make(map[aoc.Pointer]struct{}),
+		energized:     make(map[aoc.Coordinate]struct{}),
 	}
 
-	walk(newPos, (direction+3)%4)
-	walk(newPos, (direction+1)%4)
+	w.walk(p)
+
+	return len(w.energized) - 1
 }
 
 func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
-	resultPart1 := 0
+	grid := input.Grid()
+
+	resultPart1 := walk(grid, aoc.NewPointer(-1, 0, 1))
+
 	resultPart2 := 0
-
-	grid = input.Grid()
-
-	reset()
-	walk(aoc.Coordinate{X: -1, Y: 0}, 1)
-	resultPart1 = len(energized) - 1
-
 	for startX := 0; startX < grid.Width; startX++ {
-		reset()
-		walk(aoc.Coordinate{X: startX, Y: -1}, 2)
-
-		resultPart2 = max(resultPart2, len(energized))
-
-		reset()
-		walk(aoc.Coordinate{X: startX, Y: grid.Height}, 0)
-
-		resultPart2 = max(resultPart2, len(energized))
-
+		resultPart2 = max(
+			resultPart2,
+			max(
+				walk(grid, aoc.NewPointer(startX, -1, 2)),
+				walk(grid, aoc.NewPointer(startX, grid.Height, 0)),
+			))
 	}
 
 	for startY := 0; startY < grid.Height; startY++ {
-		reset()
-		walk(aoc.Coordinate{X: -1, Y: startY}, 1)
-
-		resultPart2 = max(resultPart2, len(energized))
-
-		reset()
-		walk(aoc.Coordinate{X: grid.Width, Y: startY}, 3)
-
-		resultPart2 = max(resultPart2, len(energized))
+		resultPart2 = max(
+			resultPart2,
+			max(
+				walk(grid, aoc.NewPointer(-1, startY, 1)),
+				walk(grid, aoc.NewPointer(grid.Width, startY, 3)),
+			))
 	}
-
-	resultPart2--
 
 	return resultPart1, resultPart2
 }
