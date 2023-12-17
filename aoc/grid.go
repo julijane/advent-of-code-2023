@@ -31,6 +31,20 @@ func (g *Grid) Get(c Coordinate, outsideVal byte) byte {
 	return g.Data[c.Y][c.X]
 }
 
+func (g *Grid) GetInt(c Coordinate, outsideVal int) int {
+	if !g.Inside(c) {
+		return outsideVal
+	}
+
+	return Atoi(string(g.Data[c.Y][c.X]))
+}
+
+func (g *Grid) Set(c Coordinate, val byte) {
+	if g.Inside(c) {
+		g.Data[c.Y][c.X] = val
+	}
+}
+
 func (g *Grid) Find(search byte) Coordinate {
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
