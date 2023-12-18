@@ -7,15 +7,15 @@ import (
 )
 
 type historyPoint struct {
-	walkedStraight int
-	dir            int
 	c              aoc.Coordinate
+	dir            int
+	walkedStraight int
 }
 
 type walker struct {
 	grid        *aoc.Grid
 	myGrid      map[aoc.Coordinate]int
-	cache       map[historyPoint]int
+	seen        map[historyPoint]struct{}
 	maxHeatLoss int
 	target      aoc.Coordinate
 	minStraight int
@@ -34,71 +34,108 @@ func newWalker(grid *aoc.Grid, minStraight, maxStriaght int) *walker {
 	return &walker{
 		grid:        grid,
 		myGrid:      myGrid,
-		cache:       make(map[historyPoint]int),
 		maxHeatLoss: math.MaxInt,
+		seen:        make(map[historyPoint]struct{}),
 		target:      aoc.Coordinate{X: grid.Width - 1, Y: grid.Height - 1},
 		minStraight: minStraight,
 		maxStraight: maxStriaght,
 	}
 }
 
-func (w *walker) walk(path aoc.Coordinates, startPos aoc.Coordinate, dir int, heatLoss int, walkedStraight int) {
-	if !w.grid.Inside(startPos) || path.Includes(startPos) {
-		return
-	}
+type QueueEntry struct {
+	hp       historyPoint
+	heatLoss int
+}
 
-	curHistoryPoint := historyPoint{
-		c:              startPos,
-		dir:            dir,
-		walkedStraight: walkedStraight,
-	}
+type Queue []QueueEntry
 
-	if priorLoss, ok := w.cache[curHistoryPoint]; ok {
-		if priorLoss <= heatLoss {
-			return
+func (q *Queue) Pop() QueueEntry {
+	result := (*q)[0]
+	*q = (*q)[1:]
+	return result
+}
+
+func (q *Queue) Push(qe QueueEntry) {
+	for n, qe2 := range *q {
+		if qe2.heatLoss < qe.heatLoss {
+			continue
 		}
-	}
-
-	w.cache[curHistoryPoint] = heatLoss
-	path = append(path, startPos)
-
-	heatLoss += w.myGrid[startPos]
-
-	if heatLoss >= w.maxHeatLoss {
+		*q = append((*q)[:n], append([]QueueEntry{qe}, (*q)[n:]...)...)
 		return
 	}
+	*q = append(*q, qe)
+}
 
-	if startPos == w.target {
-		if heatLoss < w.maxHeatLoss {
-			w.maxHeatLoss = heatLoss
+func (w *walker) walk() int {
+	queue := Queue{QueueEntry{
+		hp: historyPoint{
+			c:              aoc.Coordinate{X: 0, Y: 0},
+			dir:            1,
+			walkedStraight: 0,
+		},
+		heatLoss: 0,
+	}}
+
+	for len(queue) > 0 {
+		cur := queue.Pop()
+
+		if !w.grid.Inside(cur.hp.c) {
+			continue
 		}
-		return
+
+		if _, ok := w.seen[cur.hp]; ok {
+			continue
+		}
+
+		heatLoss := cur.heatLoss + w.myGrid[cur.hp.c]
+
+		if cur.hp.c == w.target {
+			return heatLoss
+		}
+
+		w.seen[cur.hp] = struct{}{}
+
+		if cur.hp.walkedStraight < w.maxStraight {
+			queue.Push(QueueEntry{
+				hp: historyPoint{
+					c:              cur.hp.c.Move(cur.hp.dir),
+					dir:            cur.hp.dir,
+					walkedStraight: cur.hp.walkedStraight + 1,
+				},
+				heatLoss: heatLoss,
+			})
+		}
+
+		if cur.hp.walkedStraight >= w.minStraight {
+			queue.Push(QueueEntry{
+				hp: historyPoint{
+					c:              cur.hp.c.Move((cur.hp.dir + 3) % 4),
+					dir:            (cur.hp.dir + 3) % 4,
+					walkedStraight: 0,
+				},
+				heatLoss: heatLoss,
+			})
+			queue.Push(QueueEntry{
+				hp: historyPoint{
+					c:              cur.hp.c.Move((cur.hp.dir + 1) % 4),
+					dir:            (cur.hp.dir + 1) % 4,
+					walkedStraight: 0,
+				},
+				heatLoss: heatLoss,
+			})
+		}
+
 	}
 
-	if walkedStraight < w.maxStraight {
-		w.walk(path, startPos.Move(dir), dir, heatLoss, walkedStraight+1)
-	}
-
-	if walkedStraight >= w.minStraight {
-		w.walk(path, startPos.Move((dir+3)%4), (dir+3)%4, heatLoss, 0)
-		w.walk(path, startPos.Move((dir+1)%4), (dir+1)%4, heatLoss, 0)
-	}
+	return 0
 }
 
 func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
-	resultPart1 := 0
-	resultPart2 := 0
-
 	grid := input.Grid()
 	grid.Set(aoc.Coordinate{X: 0, Y: 0}, byte('0'))
 
-	w := newWalker(grid, 0, 2)
-	w.walk(aoc.Coordinates{}, aoc.Coordinate{X: 0, Y: 0}, 1, 0, 0)
-	resultPart1 = w.maxHeatLoss
-
-	w = newWalker(grid, 3, 9)
-	w.walk(aoc.Coordinates{}, aoc.Coordinate{X: 0, Y: 0}, 1, 0, 0)
-	resultPart2 = w.maxHeatLoss
+	resultPart1 := newWalker(grid, 0, 2).walk()
+	resultPart2 := newWalker(grid, 3, 9).walk()
 
 	return resultPart1, resultPart2
 }
