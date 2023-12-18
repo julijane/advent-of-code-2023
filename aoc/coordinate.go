@@ -59,6 +59,20 @@ func (c Coordinate) Move(direction int) Coordinate {
 	return c
 }
 
+func (c Coordinate) MoveBy(direction int, amount int) Coordinate {
+	switch direction {
+	case 0:
+		return c.AddXY(0, -amount)
+	case 1:
+		return c.AddXY(amount, 0)
+	case 2:
+		return c.AddXY(0, amount)
+	case 3:
+		return c.AddXY(-amount, 0)
+	}
+	return c
+}
+
 type Coordinates []Coordinate
 
 func (cs Coordinates) Includes(c Coordinate) bool {

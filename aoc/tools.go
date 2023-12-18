@@ -74,3 +74,10 @@ func SliceFrom[T any](s []T, from int) []T {
 
 	return s[from:]
 }
+
+func AbsInt(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
