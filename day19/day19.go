@@ -7,25 +7,29 @@ import (
 	"github.com/julijane/advent-of-code-2023/aoc"
 )
 
-type numrange struct {
+type ratingrange struct {
 	from, to int
 }
 
-type rangeMapping struct {
-	ranges [4]numrange
-	target string
+func (rr *ratingrange) len() int {
+	return rr.to - rr.from + 1
+}
+
+type ratingranges struct {
+	categories [4]ratingrange
+	workflow   string
 }
 
 type part [4]int // x, m, a, s
 
 type rule struct {
-	which   int    // x, m, a, s
-	op      byte   // <, >
-	compare int    // n
-	target  string // workflow, in, R or A
+	category     int    // x, m, a, s
+	op           byte   // <, >
+	compare      int    // n
+	nextWorkflow string // workflow, in, R or A
 }
 
-type ruleset struct {
+type workflow struct {
 	rules     []rule
 	otherwise string
 }
@@ -33,31 +37,28 @@ type ruleset struct {
 func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	blocks := input.TextBlocks()
 
-	mappings := make(map[string]ruleset)
-	re := regexp.MustCompile(`([a-z]+){(.*)}`)
+	re := regexp.MustCompile(`(.+){(.*),([^,]+)}`)
 	re2 := regexp.MustCompile(`([a-z]+)([<>])(\d+):([a-zAR]+)`)
 
-	for _, line := range blocks[0] {
-		matches := re.FindStringSubmatch(line)
-		ruleparts := strings.Split(matches[2], ",")
+	workflows := make(map[string]workflow)
 
-		rs := ruleset{
-			otherwise: ruleparts[len(ruleparts)-1],
+	matches := re.FindAllStringSubmatch(input.SingleString(), -1)
+	for _, match := range matches {
+		newWorkflow := workflow{
+			otherwise: match[3],
 		}
 
-		for _, rulepart := range ruleparts[:len(ruleparts)-1] {
-			rp := re2.FindStringSubmatch(rulepart)
-			rule := rule{
-				which:   strings.Index("xmas", rp[1]),
-				op:      rp[2][0],
-				compare: aoc.Atoi(rp[3]),
-				target:  rp[4],
-			}
-
-			rs.rules = append(rs.rules, rule)
+		for _, rulespec := range strings.Split(match[2], ",") {
+			ruleparts := re2.FindStringSubmatch(rulespec)
+			newWorkflow.rules = append(newWorkflow.rules, rule{
+				category:     strings.Index("xmas", ruleparts[1]),
+				op:           ruleparts[2][0],
+				compare:      aoc.Atoi(ruleparts[3]),
+				nextWorkflow: ruleparts[4],
+			})
 		}
 
-		mappings[matches[1]] = rs
+		workflows[match[1]] = newWorkflow
 	}
 
 	// part 1
@@ -66,78 +67,77 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 	for _, line := range blocks[1] {
 		nums := aoc.ExtractNumbers(line)
 		part := [4]int{nums[0], nums[1], nums[2], nums[3]}
-		partBin := "in"
+		currentWorkflow := "in"
 
 	sequence:
-		for partBin != "R" && partBin != "A" {
-			for _, rule := range mappings[partBin].rules {
-				if rule.op == '<' && part[rule.which] < rule.compare {
-					partBin = rule.target
+		for currentWorkflow != "R" && currentWorkflow != "A" {
+			for _, rule := range workflows[currentWorkflow].rules {
+				if rule.op == '<' && part[rule.category] < rule.compare {
+					currentWorkflow = rule.nextWorkflow
 					continue sequence
-				} else if rule.op == '>' && part[rule.which] > rule.compare {
-					partBin = rule.target
+				} else if rule.op == '>' && part[rule.category] > rule.compare {
+					currentWorkflow = rule.nextWorkflow
 					continue sequence
 				}
 			}
 
-			partBin = mappings[partBin].otherwise
+			currentWorkflow = workflows[currentWorkflow].otherwise
 		}
 
-		if partBin == "A" {
+		if currentWorkflow == "A" {
 			sumPart1 += part[0] + part[1] + part[2] + part[3]
 		}
 	}
 
 	// part 2
 	sumPart2 := 0
-	rangeMappings := []rangeMapping{
+	ranges := []ratingranges{
 		{
-			ranges: [4]numrange{
+			categories: [4]ratingrange{
 				{1, 4000},
 				{1, 4000},
 				{1, 4000},
 				{1, 4000},
 			},
-			target: "in",
+			workflow: "in",
 		},
 	}
 
-	for len(rangeMappings) > 0 {
-		newRangeMappings := []rangeMapping{}
-		for _, rm := range rangeMappings {
-			if rm.target == "R" || rm.target == "A" {
-				if rm.target == "A" {
-					sumPart2 += (rm.ranges[0].to - rm.ranges[0].from + 1) *
-						(rm.ranges[1].to - rm.ranges[1].from + 1) *
-						(rm.ranges[2].to - rm.ranges[2].from + 1) *
-						(rm.ranges[3].to - rm.ranges[3].from + 1)
+	for len(ranges) > 0 {
+		newRanges := []ratingranges{}
+		for _, rangeIn := range ranges {
+			if rangeIn.workflow == "R" || rangeIn.workflow == "A" {
+				if rangeIn.workflow == "A" {
+					sumPart2 += rangeIn.categories[0].len() *
+						rangeIn.categories[1].len() *
+						rangeIn.categories[2].len() *
+						rangeIn.categories[3].len()
 				}
 				continue
 			}
 
-			rules := mappings[rm.target].rules
-			for _, rule := range rules {
-				newrm := rangeMapping{
-					ranges: rm.ranges,
-					target: rule.target,
+			for _, rule := range workflows[rangeIn.workflow].rules {
+				rangeNew := ratingranges{
+					categories: rangeIn.categories,
+					workflow:   rule.nextWorkflow,
 				}
 
 				if rule.op == '<' {
-					newrm.ranges[rule.which].to = rule.compare - 1
-					rm.ranges[rule.which].from = rule.compare
+					rangeNew.categories[rule.category].to = rule.compare - 1
+					rangeIn.categories[rule.category].from = rule.compare
 				} else {
-					newrm.ranges[rule.which].from = rule.compare + 1
-					rm.ranges[rule.which].to = rule.compare
+					rangeNew.categories[rule.category].from = rule.compare + 1
+					rangeIn.categories[rule.category].to = rule.compare
 				}
 
-				newRangeMappings = append(newRangeMappings, newrm)
+				newRanges = append(newRanges, rangeNew)
 			}
 
-			rm.target = mappings[rm.target].otherwise
-			newRangeMappings = append(newRangeMappings, rm)
+			rangeIn.workflow = workflows[rangeIn.workflow].otherwise
+			newRanges = append(newRanges, rangeIn)
 		}
 
-		rangeMappings = newRangeMappings
+		ranges = newRanges
 	}
 
 	return sumPart1, sumPart2
