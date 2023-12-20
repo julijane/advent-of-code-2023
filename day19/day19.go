@@ -122,6 +122,10 @@ func calc(input *aoc.Input, runPart1, runPart2 bool) (int, int) {
 					workflow:   rule.nextWorkflow,
 				}
 
+				// This code is actually not fully correct, but it works for the challenge.
+				// It would actually need to ensure that the split point is in the
+				// old range. This code as is would instead make the range bigger than
+				// it was before.
 				if rule.op == '<' {
 					rangeNew.categories[rule.category].to = rule.compare - 1
 					rangeIn.categories[rule.category].from = rule.compare
