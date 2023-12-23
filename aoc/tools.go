@@ -81,3 +81,11 @@ func AbsInt(x int) int {
 	}
 	return x
 }
+
+func New2DSlice[T any](rows, cols int) [][]T {
+	s := make([][]T, rows)
+	for i := range s {
+		s[i] = make([]T, cols)
+	}
+	return s
+}
